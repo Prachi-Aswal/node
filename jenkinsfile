@@ -5,7 +5,7 @@ pipeline {
            AWS_ACCOUNT_ID="437144803032"
            AWS_DEFAULT_REGION="us-east-2"
            IMAGE_REPO_NAME="prachi-aswal-nodejs"
-           IMAGE_TAG= "${env.BUILD_ID}"
+           IMAGE_TAG= "latest"
            REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
            }
           
