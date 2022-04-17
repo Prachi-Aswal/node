@@ -70,7 +70,7 @@ sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --u
 stage('Building our image') {
 steps {
 script {
-dockerImage = docker.build registryName + ":$BUILD_NUMBER"
+dockerImage = docker.build prachi-aswal-nodejs + ":$BUILD_NUMBER"
 }
 }
 }
