@@ -27,7 +27,7 @@ stages
              steps
                 {
                     git branch: 'master',
-                    credentialsId: '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',
+                    credentialsId: '973d1a99-2328-4225-af19-6cfd4b511630',
                     url: 'https://github.com/Prachi-Aswal/node.git'
 
                   }
