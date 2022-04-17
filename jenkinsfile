@@ -28,7 +28,7 @@ stages
                 {
                     git branch: 'master',
                     credentialsId: '973d1a99-2328-4225-af19-6cfd4b511630',
-                    url: 'https://github.com/Prachi-Aswal/node.git'
+                    url: 'https://github.com/Prachi-Aswal/simple-node-js-react-npm-app.git'
 
                   }
               }
