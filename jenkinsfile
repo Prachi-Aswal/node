@@ -1,0 +1,65 @@
+pipeline {
+
+
+  environment {
+
+        registryName = "prachi-aswal-inodejs"
+        registryCredential = 'public.ecr.aws/t0k9o0s3'
+        dockerImage = ''
+        registryUrl = 'public.ecr.aws/t0k9o0s3/prachi-aswal-nodejs'
+    }
+
+
+
+
+
+agent any
+stages
+{
+
+        stage('Git checkout')
+
+         {
+             steps
+                {
+                    git branch: 'main',
+                    credentialsId: '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',
+                    url: 'https://github.com/Prachi-Aswal/node.git'
+
+                  }
+              }
+
+
+
+
+stage('Build')
+{
+          steps
+
+                {
+                    sh "npm install"
+                  }
+
+}
+
+
+stage('Test')
+
+              {
+                       steps
+                             {
+
+                       sh "npm run test -- --code-coverage --no-watch --no-progress --browsers ChromeHeadlessNoSandbox"
+                              }
+                }
+
+stage('Building our image') {
+steps {
+script {
+dockerImage = docker.build registryName + ":$BUILD_NUMBER"
+
+}
+}
+}
+
+
