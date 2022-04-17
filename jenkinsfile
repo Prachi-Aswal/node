@@ -82,7 +82,7 @@ script {
 docker.withRegistry('https://437144803032.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-eks') {
 sh "echo ${REPOSITORY_URI}"
 sh "echo ${IMAGE_TAG}"
-docker.image('437144803032.dkr.ecr.us-east-2.amazonaws.com/prachi-aswal-nodejs').push('${env.BUILD_ID}')
+ sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${env.BUILD_NUMBER}"
 
 }
 }
