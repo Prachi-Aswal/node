@@ -3,7 +3,7 @@ pipeline {
 
   environment {
 
-        registryName = "prachi-aswal-inodejs"
+        registryName = "prachi-aswal-nodejs"
         registryCredential = 'public.ecr.aws/t0k9o0s3'
         dockerImage = ''
         registryUrl = 'public.ecr.aws/t0k9o0s3/prachi-aswal-nodejs'
@@ -22,7 +22,7 @@ stages
          {
              steps
                 {
-                    git branch: 'main',
+                    git branch: 'master',
                     credentialsId: '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',
                     url: 'https://github.com/Prachi-Aswal/node.git'
 
@@ -61,5 +61,37 @@ dockerImage = docker.build registryName + ":$BUILD_NUMBER"
 }
 }
 }
+stage('Push Image')
+
+{
+steps
+{
+
+script {
+
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/t0k9o0s3
+
+docker.withRegistry( "http://${registryUrl}", registryCredential )  {
+
+dockerImage.push()
+
+}
+}
+
+}
+
+
+}
+
+
+
+
+
+
+}
+
+
+}
+
 
 
