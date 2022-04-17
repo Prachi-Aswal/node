@@ -1,13 +1,14 @@
 pipeline {
-    
-    
-  environment {
 
-        registryName = "prachi-aswal-nodejs"
-        registryCredential = 'public.ecr.aws/t0k9o0s3'
-        dockerImage = ''
-        registryUrl = 'public.ecr.aws/t0k9o0s3/prachi-aswal-nodejs'
-    }
+       environment {
+       
+           AWS_ACCOUNT_ID="437144803032"
+           AWS_DEFAULT_REGION="us-east-2"
+           IMAGE_REPO_NAME="prachi-aswal-nodejs"
+           IMAGE_TAG= ${env.BUILD_ID}
+           REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+           }
+          
 
 
 
@@ -55,35 +56,39 @@ stage('Test')
                        sh "npm run test"
                               }
                 }
-
-stage('Building our image') {
+stage('Logging into AWS ECR') {
 steps {
 script {
-dockerImage = docker.build registryName + ":$BUILD_NUMBER"
+sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+}
 
 }
 }
-}
-stage('Push Image')
 
-{
-steps
-{
 
+
+stage('Building image') {
+steps {
 script {
-
-
-
-docker.withRegistry( "http://${registryUrl}", registryCredential )  {
-
-dockerImage.push()
-
+dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+}
 }
 }
 
+stage('Pushing to ECR') {
+steps {
+script {
+docker.withRegistry('437144803032.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-eks') {
+sh "echo ${REPOSITORY_URI}"
+sh "echo ${IMAGE_TAG}"
+docker.image('437144803032.dkr.ecr.us-east-2.amazonaws.com/prachi-aswal-nodejs').push('latest')
+
 }
-
-
+}
+}
+}
+}
 }
 
 
