@@ -1,87 +1,49 @@
 pipeline {
-
-       environment {
-       
-           AWS_ACCOUNT_ID="437144803032"
-           AWS_DEFAULT_REGION="us-east-2"
-           IMAGE_REPO_NAME="prachi-aswal-nodejs"
-           IMAGE_TAG= "latest"
-           REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-           }
-          
-
-
-
-
-
-agent any
-tools {
-    nodejs 'nodejs'
+  environment {
+        registryName = "prachi-aswal-nodejs"
+        registryCredential = 'ecr-eks'
+        dockerImage = ''
+        registryUrl = '437144803032.dkr.ecr.us-east-2.amazonaws.com/prachi-aswal-nodejs'
     }
+agent any
+tools {nodejs "nodejs"}
 stages
 {
-
         stage('Git checkout')
-
          {
              steps
                 {
                     git branch: 'master',
                     credentialsId: '973d1a99-2328-4225-af19-6cfd4b511630',
                     url: 'https://github.com/Prachi-Aswal/node.git'
-
                   }
               }
-
-
-
-
 stage('Build')
 {
           steps
-
                 {
                     sh "npm install"
                   }
-
 }
-
-
 stage('Test')
-
               {
                        steps
                              {
-
                        sh "npm run test"
                               }
                 }
-stage('Logging into AWS ECR') {
-steps {
-script {
-sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-}
-
-}
-}
-
-
-
 stage('Building our image') {
 steps {
 script {
-dockerImage = docker.build prachi-aswal-nodejs + ":$BUILD_NUMBER"
+dockerImage = docker.build registryName + ":$BUILD_NUMBER"
 }
 }
 }
-
-
 stage('Pushing to ECR') {
 steps {
 script {
 docker.withRegistry('https://437144803032.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-eks') {
 dockerImage.push()
-
 }
 }
 }
