@@ -79,7 +79,7 @@ sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
 stage('Pushing to ECR') {
 steps {
 script {
-docker.withRegistry('437144803032.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-eks') {
+docker.withRegistry('https://437144803032.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-eks') {
 docker.push("${env.BUILD_NUMBER}")
 docker.push("latest")
 
